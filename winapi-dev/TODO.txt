@@ -1,0 +1,53 @@
+bugs
+----
+- toolbar buttons dissapear after a while
+- can't make toolbar buttons out of bmps or icons with transparent color
+- can't make listbox send WM_COMPAREITEM for custom-sorting
+
+
+refactoring
+-----------
+- struct masked bitfields: implement masked bitfields as struct getter/setter pair
+- tostring showing a struct's virtual fields and values (use ffi inspection lib to inspect ffi names)
+
+
+features
+--------
+autosize and margins (winapi has it for push-buttons only)
+tooltips
+window positioning: center to screen or other window
+window snapping + threshold
+ShowModal() with modal result code on close; buttons with ModalResult = Cancel or Default or MB_*
+multi-monitor testing/support
+
+controls
+--------
+slider
+updown
+dateedit
+scrollbar
+hotkey
+progressbar
+statusbar
+richedit?
+
+features/less used
+------------------
+alpha blending (see WS_EX_LAYERED, SetLayeredWindowAttributes, UpdateLayeredWindow)
+autoscroll ?
+bidi mode
+docking site
+dragging: manual/auto
+mdi ?
+dpi-aware ?
+border width
+transparent (WS_EX_TRANSPARENT, but already used for groupbox to fix bad interaction with WS_CLIPCHILDREN)
+context help ?
+
+documentation
+-------------
+- developer documentation: ffi, proc, oo
+- class reference
+- showcase app
+- unit testing
+

@@ -1,0 +1,156 @@
+==== tables ====
+  * `cat(t[,sep]) -> t[1] .. sep .. t[2] ... sep .. t[#t]`
+    * alias for `table.concat`
+    * alt. names
+      * `concat` - generic name, would prefer a mnemonic, eg. concat(s1,s2) could be the functional variant of the .. operator
+      * `join` - generic name, eg. join(t1,t2) could be cartesian product for t1 and t2
+
+  * `keys(t) -> {k1,k2,...}`
+    * make the list of the keys of a table
+    * use cases: most APIs take lists but your data is a set or is in the keys of a table eg. you want to call socket.select() but your sockets are in a table like {socket = thread}
+
+  * `extend(dt,...) -> {t1[1],t1[2],...,t2[1],t2[2],...,tn[#tn]}`
+    * extend a list with the elements of other lists
+    * use cases: ?
+
+  * `min(t[,cmp] | a,b,...) -> x`
+  * `max(t[,cmp] | a,b,...) -> x`
+    * find the smallest or largest element in a list
+    * if the arguments are all numbers or have __lt defined, compare them instead
+    * never write `min(unpack(t))`, unlike with `math.min` where it's perfectly ok!
+
+  * `sum(t) -> t[1]+t[2]+...+t[#t]`
+    * compute the sum of all elements of a list; return 0 for an empty list
+
+==== strings ====
+  * `s:anyof(t) -> s`
+    * find if any of the elements of list t are in s
+    * TODO: python's `in` operator is universal for finding stuff in stuff: element in list, i.e. scan, string in string i.e. s:find, any of a list in string, i.e. s:anyof(t) ?, any of a list in another list, i.e. scan(t, t2) ?
+
+==== math ====
+
+  * `abs(x) -> y`
+  * `random(m[,n]) -> x`
+  * `floor(x) -> y`
+  * `ceil(x) -> y`
+    * aliases for the functions from `math`
+  * `divmod(x,y) -> q,r`
+    * return the quotient and reminder of dividing x by y
+
+==== coroutines ====
+
+  * `yield(...) -> ...`
+  * `resume(co,...) -> ...` coroutine.resume
+    * aliases for coroutine.yield and coroutine.resume
+  * `cowrap(f) -> f`
+    * like coroutine.wrap but propagates errors
+
+==== type conversion ====
+  * `str(x) -> s`
+    * alias of `tostring`
+  * `num(v[,base]) -> x`
+    * alias of `tonumber`
+  * `chr(...) -> s`
+    * alias of `string.byte`
+  * `bool(x) -> b`
+    * true if x ~= nil or false
+
+==== type checking ====
+
+  * `callable(x) -> b`
+    * check if x is a function or has a __call metamethod
+    * problem: Lua's stdlib still doesn't check metamethods, so checking for callables would make things inconsistent
+
+  * `indexable(x) -> b`
+    * check if x is a table or has a __index metamethod
+    * problem: Lua's stdlib still doesn't check metamethods, so checking for indexables would make things inconsistent
+
+
+==== sets ====
+
+  * `comm(t1,t2) -> t`
+    * return a table of all the elements in t1 for which t2[k] ~= nil
+    * name choice: unix comm command
+    * alt. names
+      * `intersect` - dunno, maybe it's better
+
+  * `diff(t1,t2) -> t`
+    * return a table of elements in t1 for which t2[k] == nil
+    * alt. names
+      * `substract` - dunno, maybe it's better
+      * `difference` - dunno, maybe it's better
+
+
+==== error handling ====
+
+  * `assert(v[,message[,format_args...]])`
+    * like assert but formats the message using string.format if any arguments are passed after the message
+
+  * `ipcall(iterator<v1,v2,...>) -> iterator -> ok,v1,v2,...`
+    * wraps an iterator in pcall
+      * problems: why would one write iterators that could fail instead of writing them to return false,error|true,values... ?
+
+==== logging ====
+
+  * `printf(s,...)`
+    * `io.write(string.format(s,...))`
+    * `io.stderr:write(string.format(s,...))`
+
+  * `pformat(...) -> s`
+    * pretty-print the arguments to a string
+    * alt. names
+      * `dump` - not clear if it prints or just formats the args
+      * `pstr` - ?
+
+  * `pp(...)`
+    * does `print(pformat(...))`
+    * alt. names
+      * `pprint` - too long for a debugging op?
+      * `d` - used for temp variables?
+    * problems: a debug tool in a glue lib?
+
+  *
+
+
+==== not included ====
+
+||`s:ltrim([charsets])  `||`                                   `||
+||`s:rtrim([charsets])  `||`                                   `||
+||`s:pad([char])        `||`                                   `||
+||`s:startswith(ss)     `||`                                   `||
+||`s:endswith(ss)       `||`                                   `||
+||`s:lines()            `||`s:gmatch'([^\n])*\n'               `||
+||`s:lineslist()        `||`collect(s:gmatch'([^\n])*\n')      `||
+||`compose(f,g)         `||`function(...) return f(g(...)) end `||
+||`bind1(f,v)           `||`function(...) return f(v,...) end  `||
+||`bind2(f,v)           `||`function(...) return f(...,v,select(2,...)) end`||
+
+==== reasons for exclusion =====
+
+  * `compose(f,g) -> h; h(...) -> f(g(...))`
+    * problems: need serious use cases because explicit definitions are much more readable
+
+  * `bind1(f,v) -> g; g(...) -> f(v,...)`
+    * use cases: `callback = bind1(o.callback, o)` but `callback = function(...) return o:callback(...) end` is more readable and not much longer
+    * problems: most function have the subject in the first arg and it's the other args that you would like to bind
+
+  * `bind2(f,v) -> g; g(...) -> f(...,v,select(2,...))`
+    * use cases: `lines = bind2(string.gmatch, '([^\n])\n')` but `lines = function(s) return s:gmatch('([^\n])\n') end` is more readable and not much longer
+
+  * `slice(t[,i=1[,j=-1[,step=1]]) -> {v[i],v[i+1*step],v[i+2*step]...,v[j]}`
+    * make a slice of a list
+    * use cases: extract the payload from a list of tokens
+    * problems: `dt = slice(t)` to copy t is a misuse; it's also not clear that the operation is not in-place
+
+  * `scan(t,e) -> i`
+    * return the first index in t where `t[i] == e`
+    * use cases: find an element in a list without indexing the list
+	* alt. names: `find`
+
+  * `count(t[,value[,maxcount]]) -> n`
+    * return the number of elements of t optionally matching a value, optionally up to maxcount
+    * use case: check if a table has at least n elements
+    * use case: count duplicates
+    * problem: two different semantics overloading one name
+    * alt. names
+      * `size` - misleading for a O(n) operation; maxcount doesn't fit

@@ -1,0 +1,14 @@
+#sidebar GlueSidebar
+==`lookahead(iterator<v1,v2,...>) -> iterator<v1,nextv1,v2,nextv2>`==
+
+*Wraps an iterator so that each iteration has access to the values of the next iteration.*
+  * on the last iteration the values of the next iteration are all nil.
+  * in the current implementation, only up to 4 iteration values are captured.
+
+*Examples*
+
+{{{
+TODO
+}}}
+
+*See also:* [tee].

@@ -1,0 +1,47 @@
+#sidebar GlueSidebar
+*v1.0a* | [gluedesign design] | [http://code.google.com/p/lua-library-assessment/source/browse/init.lua?repo=glue code] | [LSL rationale]
+
+Touches on tables, lists, strings, assertions, coroutines, iterators, errors, closures, metatables, modules. 
+
+Written in pure Lua. Works with Lua 5.1, Lua 5.2 and LuaJIT2.
+
+|| *tables* ||||
+||`index(t) -> dt`||[index switch keys with values]||
+||`keys(t) -> dt`||[keys make a list of all the keys]||
+||`update(dt,t1,...) -> dt`||[update merge tables]||
+|| *lists* ||||
+||`concat(t[,sep]) -> s`||table.concat alias||
+||`extend(dt,t1,...) -> dt`||[extend extend a list]||
+||`pluck(t,key) -> dt`||[pluck extract values from a list of objects]||
+||`sort(t[,cmp]) -> t`||[sort table.sort and returns the table]||
+||`min(t[,cmp]) -> x`<br>`min(a,b,...) -> x`||[min smallest element]||
+||`max(t[,cmp]) -> x`<br>`max(a,b,...) -> x`||[max largest element]||
+||`sum(t[,key]) -> x`||[sum sum of elements]||
+||`reverse(t) -> t`||[reverse reverse the order of elements in place]||
+|| *strings* ||||
+||`format % arg -> s`<br>`format % {arg1,...} -> s`||[format string formatting sugar]||
+||`s:gsplit(sep[,plain]) -> iterator<e[, captures...]>`||[gsplit split a string by a pattern]||
+||`s:trim([charset]) -> s`||[trim remove padding]||
+||`s:escape() -> s`||[escape escape magic pattern characters]||
+||`s:starts(prefix) -> true|false`||[starts check a prefix]||
+||`s:ends(suffix) -> true|false`||[ends check a suffix]||
+|| *coroutines* ||||
+||`yield(...) -> ...`||coroutine.yield alias||
+||`cowrap(f) -> f`||coroutine.wrap alias||
+|| *iterators* ||||
+||`collect([i,]iterator) -> t`||[collect collect iterated values into a list]||
+||`ipcall(iterator<v1,v2,...>) -> iterator<ok,v1,v2,...>`||[ipcall iterator pcall]||
+||`lookahead(iterator<v1,...>) -> iterator<v1,nextv1,...>`||[lookahead iterator precognition]||
+||`tee([n,]iterator) -> iter1,...,iterN`||[tee iterator multiplication]||
+|| *assertions* ||||
+||`assert(v[,message[,args...]])`||[assert assert with optional string formatting]||
+||`argcheck(n,v,type|value[,error,...]) -> x`||[argcheck typecheck and/or convert arguments]||
+||`argerror(n,error,...)`||[argerror raise an invalid argument error]||
+|| *closures* ||||
+||`pass(...) -> ...`||[pass does nothing, returns back all arguments]||
+||`memoize(f) -> g`||[memoize single-value memoization]||
+|| *metatables* ||||
+||`inherit(t,parent1,...) -> t`||[inherit setup inheritance]||
+||`parents(t) -> parent1,...`||[parents inspect inheritance]||
+|| *modules* ||||
+||`import([env,]modules|t) -> env`||[import import modules into the current environment]||

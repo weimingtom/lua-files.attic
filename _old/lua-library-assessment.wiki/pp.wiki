@@ -1,0 +1,82 @@
+#sidebar GlueSidebar
+Serialization solution based on Lua source code generation.
+
+===todo===
+  * inline indenting
+  * identity preserving mode:
+    * serialize upvalues
+    * detect duplicate objects (tables and serializable userdata; +filter hook?)
+    * detect duplicate strings (with a size lower limit? eg. 0 would intern all strings)
+    * look up values for their names in a specified environment (eg. `_G`) and if found, output them as references in that environment instead of serializing their content
+
+===features===
+  * serializes all types except threads and userdata
+  * human-readable format:
+    * implicit keys for the array part
+    * short syntax for identifier keys
+    * sorting the table key-value pairs
+    * splitting strings at line boundary
+    * 3 indenting styles to choose from (inline, tree, compact)
+    * inlining table elements up to a limited line size and/or number of elements
+  * portable:
+    * between Lua versions: generated code is compatible with 5.1, 5.2, LJ2
+    * between platforms: \n and \r are escaped to preserve binary consistency
+    * editor and terminal friendly: non-printable characters are escaped
+  * binary identity by sorting the key-value pairs
+  * scalable by writing with a consumer function (eg. a [writebuffer])
+  * cycle detection and resolution (skip, abort, replace)
+  * depth limit
+  * filter hook (which receives the full list of parents)
+  * identity preserving mode with:
+    * tracing and handling of duplicate objects
+    * serializing function upvalues
+    * interning strings (from a specified size up)
+    * detecting globals (or objects from another environment) and saving them by name (asks a filter function to decide)
+    * saving of metatables (asks a filter function to decide how)
+
+===further ideas===
+  * smart inline: decide the number of elements on a line so the lines look aligned
+  * smart align: align lists of objects in vertically-aligned table form, maybe even compress those with a special constructor?
+  * option for base64 encoding for strings for which \xxx would lead to a much longer string
+
+===limitations===
+
+*limitations of the approach:*
+  * can't serialize threads or userdata transparently; userdata must be provided with a `__pp` metamethod to become serializable.
+  * some fractions are not compact, eg. 5/6 takes 19 bytes serialized vs 8 bytes native (on the other hand, integers up to 10^7 are more compact than native).
+  * binary data is not compact because of escaping of non-printable characters (can be turned off).
+
+*limitations of the implementation:*
+  * making the output hashable is not scalable beyond memory limit when the bulk of the data is in the keys rather than in the associated values because the keys must be serialized to strings so they can be compared and sorted (this can be turned off but I suspect for most use cases this is not an issue to begin with)
+  * the recursive implementation limits the maximum nesting level possible to the available stack, but on the other hand it is heap free so it should be faster.
+*Comparison with available serializers:*
+
+https://github.com/pkulchenko/serpent
+
+https://github.com/richardhundt/lua-marshal http://thread.gmane.org/gmane.comp.lang.lua.general/72952
+
+https://github.com/lua-nucleo/lua-nucleo/blob/master/lua-nucleo/tserialize.lua
+
+https://github.com/lua-nucleo/lua-nucleo/blob/master/lua-nucleo/tstr.lua
+
+https://github.com/stevedonovan/Penlight/blob/master/lua/pl/pretty.lua
+
+https://github.com/agladysh/luabins
+
+https://github.com/fab13n/metalua/blob/master/src/lib/serialize.lua
+
+http://lua-users.org/wiki/TableSerialization
+
+-------------------------------------------------------------------
+                 name |     rel | abs s / iter = us (1e-6 s) / iter
+-------------------------------------------------------------------
+         luabins_load |  1.0000 |   0.42 /     100000 = 4.200000 us
+         luabins_save |  1.0952 |   0.46 /     100000 = 4.600000 us
+              marshal |  1.1429 |   0.48 /     100000 = 4.800000 us
+             unengram |  1.4524 |   0.61 /     100000 = 6.100000 us
+            unmarshal |  1.7143 |   0.72 /     100000 = 7.200000 us
+           loadstring |  3.7857 |   1.59 /     100000 = 15.900000 us
+      pluto_unpersist |  3.9762 |   1.67 /     100000 = 16.700000 us
+        pluto_persist |  5.8571 |   2.46 /     100000 = 24.600000 us
+               concat |  9.3810 |   3.94 /     100000 = 39.400000 us
+               engram | 42.1190 |  17.69 /     100000 = 176.900000 us

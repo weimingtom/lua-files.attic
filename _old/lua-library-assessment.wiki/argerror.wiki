@@ -1,0 +1,11 @@
+#sidebar GlueSidebar
+==`argerror(n[,error,...])`==
+
+*Raise an `invalid argument #n (error)` error.*
+
+*Examples*
+{{{
+TODO
+}}}
+
+*See also:* [argcheck].
