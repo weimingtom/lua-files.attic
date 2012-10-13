@@ -30,7 +30,7 @@ function matrix:copy()
 	return matrix:new(self:unpack())
 end
 
-function matrix:transform(x, y)
+function matrix:transform_point(x, y)
 	return self.xx * x + self.xy * y + self.x0,
 			 self.yx * y + self.yy * y + self.y0
 end
@@ -41,13 +41,23 @@ function matrix:transform_distance(x, y)
 end
 
 function matrix:multiply(xx, yx, xy, yy, x0, y0)
-	 return self:reset(
-				 xx * self.xx + yx * self.xy,
-				 xx * self.yx + yx * self.yy,
-				 xy * self.xx + yy * self.xy,
-				 xy * self.yx + yy * self.yy,
-				 x0 * self.xx + y0 * self.xy + self.x0,
-				 x0 * self.yx + y0 * self.yy + self.y0)
+	return self:reset(
+				xx * self.xx + yx * self.xy,
+				xx * self.yx + yx * self.yy,
+				xy * self.xx + yy * self.xy,
+				xy * self.yx + yy * self.yy,
+				x0 * self.xx + y0 * self.xy + self.x0,
+				x0 * self.yx + y0 * self.yy + self.y0)
+end
+
+function matrix:transform(xx, yx, xy, yy, x0, y0)
+	return self:reset(
+				self.xx * xx + self.yx * xy,
+				self.xx * yx + self.yx * yy,
+				self.xy * xx + self.yy * xy,
+				self.xy * yx + self.yy * yy,
+				self.x0 * xx + self.y0 * xy + x0,
+				self.x0 * yx + self.y0 * yy + y0)
 end
 
 function matrix:determinant()
@@ -135,6 +145,20 @@ end
 
 function matrix:is_pixel_perfect() --means pixels map 1:1 with this transform so no filtering necessary
 	return self:has_unity_scale() and math.floor(self.x0) == self.x0 and math.floor(self.y0) == self.y0
+end
+
+function matrix_mt.__mul(a, b)
+	return a:copy():multiply(b)
+end
+
+function matrix_mt.__eq(a, b)
+	return
+		a.xx == b.xx and
+		a.yx == b.yx and
+		a.xy == b.xy and
+		a.yy == b.yy and
+		a.x0 == b.x0 and
+		a.y0 == b.y0
 end
 
 return matrix
