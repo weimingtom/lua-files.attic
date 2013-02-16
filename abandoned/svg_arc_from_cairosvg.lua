@@ -1,5 +1,15 @@
 local arc = require'path_arc'.arc
 
+local function rotate(x, y, angle) --from cairosvg/helpers.py, for elliptical_arc
+	return
+		x * math.cos(angle) - y * math.sin(angle),
+		y * math.cos(angle) + x * math.sin(angle)
+end
+
+local function point_angle(cx, cy, px, py) --from cairosvg/helpers.py, for elliptical_arc
+    return math.atan2(py - cy, px - cx)
+end
+
 --from cairosvg/path.py
 function svgarc(write, x1, y1, rx, ry, rotation, large, sweep, x3, y3)
 	if x1 == x3 and y1 == y3 then return x1, y1 end
