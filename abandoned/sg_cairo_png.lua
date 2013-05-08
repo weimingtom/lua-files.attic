@@ -1,4 +1,5 @@
 --image sources for cairo scene graph using cairo's built-in png support.
+--this was used before I made the libpng binding.
 local SG = require'sg_cairo'
 local ffi = require'ffi'
 local cairo = require'cairo'

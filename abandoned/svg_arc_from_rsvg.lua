@@ -1,3 +1,4 @@
+--svgarc from rsvg (I decided on the implementation from AGG)
 
 local function arc_segment(write, cpx, cpy, xc, yc, th0, th1, rx, ry, x_axis_rotation)
     local f = x_axis_rotation * math.pi / 180

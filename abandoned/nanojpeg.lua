@@ -1,4 +1,5 @@
 --nanojpeg binding, see: http://keyj.emphy.de/nanojpeg/
+--I modified nanojpeg and made a new binding for it.
 local ffi = require'ffi'
 local glue = require'glue'
 local C = ffi.load'nanojpeg'

@@ -1,4 +1,5 @@
-local player = require'cairopanel_player'
+--demo on how an arc made of a single bezier segment looks at different sweeps.
+local player = require'cairo_player'
 
 --get a bezier representation of an arc of sweep a < 90° bisected by the x-axis.
 --math from http://www.tinaja.com/glib/bezcirc2.pdf (typo: x3=x1 should be x3=x0)

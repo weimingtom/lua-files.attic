@@ -1,4 +1,4 @@
---turbojpeg binding
+--turbojpeg binding (I use libjpeg API now)
 local ffi = require'ffi'
 local bit = require'bit'
 local glue = require'glue'

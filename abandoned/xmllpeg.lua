@@ -1,4 +1,5 @@
 --grammar stolen from here: https://gist.github.com/2222960
+--I use expat now.
 
 local lpeg = require'lpeg'
 local V, R, S, P, Cg, Cb = lpeg.V, lpeg.R, lpeg.S, lpeg.P, lpeg.Cg, lpeg.Cb

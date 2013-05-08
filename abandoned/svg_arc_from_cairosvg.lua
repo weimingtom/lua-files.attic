@@ -1,3 +1,4 @@
+--svgarc parametrization from cairosvg (I decided on the implementation from AGG)
 local arc = require'path_arc'.arc
 
 local function rotate(x, y, angle) --from cairosvg/helpers.py, for elliptical_arc

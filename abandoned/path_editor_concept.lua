@@ -1,4 +1,4 @@
-
+--path editor concept based on update link chains. I use closures now to do this in a more flexible way.
 local path = {
 	'move', 200, 200,
 	'rel_quad_curve', 50, -100, 100, 0,
@@ -139,7 +139,7 @@ link(p7y, p6y, fn.add, p6y, dv)
 pp(path)
 --pp(deps)
 
-local player = require'cairopanel_player'
+local player = require'cairo_player'
 local path_simplify = require'path_simplify'
 local i = 0
 function player:on_render(cr)

@@ -1,4 +1,5 @@
 --collada reader: reads a small subset of mesh and lambert effects. tested with sketchup exports.
+--collada format looks bloated and too generic. I have to look at the Sketchup C++ SDK see if it's any better.
 local xmllpeg = require'xmllpeg'
 local glue = require'glue'
 
