@@ -13,3 +13,4 @@ sg_cairo_simpl           who needs simple? :)
 svg_arc_from_...         not used (using agg's)
 turbojpeg                replaced with libjpeg
 xmllpeg                  replaced with expat (overflows on large xmls)
+cdspin                   not sure
