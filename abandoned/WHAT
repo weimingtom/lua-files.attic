@@ -14,3 +14,4 @@ svg_arc_from_...         not used (using agg's)
 turbojpeg                replaced with libjpeg
 xmllpeg                  replaced with expat (overflows on large xmls)
 cdspin                   not sure
+path_old_arc_demo        arc merged with elliptic_arc
