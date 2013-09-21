@@ -269,20 +269,31 @@ end
 
 local Z = 50 --box size in pixels
 
+local cairo = require'cairo'
+
+local wall_png  = cairo.cairo_image_surface_create_from_png'wall.png'
+local crate_png = cairo.cairo_image_surface_create_from_png'crate.png'
+local dog_png   = cairo.cairo_image_surface_create_from_png'bigdog.png'
+
+local function paint_image(cr, x, y, image)
+	cr:translate(x, y)
+	cr:set_source_surface(image, 0, 0)
+	cr:paint()
+	cr:translate(-x, -y)
+end
+
 function player:draw_tile(x, y, tile, box)
 	x = (x - 1) * Z
 	y = (y - 1) * Z
 	if tile == 'O' then
-		self:rect(x + 2, y + 2, Z - 4, Z - 4, 'faint_bg', 'hot_fg')
+		self:rect(x + 3, y + 3, Z - 6, Z - 6, 'faint_bg')
 	end
 	if box == '*' then
-		self:rect(x, y, Z, Z, nil, 'normal_fg')
+		paint_image(self.cr, x, y, wall_png)
 	elseif box == 'x' then
-		self:circle(x + Z / 2, y + Z / 4, Z / 8, nil, 'normal_fg')
-		self:line(x, y, x + Z, y + Z, 'normal_fg')
-		self:line(x + Z, y, x, y + Z, 'normal_fg')
+		paint_image(self.cr, x, y, dog_png)
 	elseif box == '#' then
-		self:rect(x + 8, y + 8, Z - 16, Z - 16, 'normal_fg')
+		paint_image(self.cr, x + 8, y + 8, crate_png)
 	end
 end
 
@@ -305,8 +316,7 @@ function player:on_render(cr)
 
 	--draw game
 
-	self.show_magnifier = false
-	self.cr:translate(0.5, 0.5)
+	self.cr:translate(0, 0.5)
 
 	--GUI
 	local dark = self:togglebutton{id = 'dark', x = 10, y = 10, w = 120, h = 26,
@@ -339,7 +349,7 @@ function player:on_render(cr)
 
 	--tiles
 	self.cr:translate((self.w - sizex * Z) / 2, (self.h - sizey * Z) / 2)
-	self:rect(0, 0, sizex * Z, sizey * Z, nil, 'faint_bg')
+	--self:rect(0, 0, sizex * Z, sizey * Z, nil, 'faint_bg')
 	for x, y, tile, box in iter_tiles() do
 		self:draw_tile(x, y, tile, box)
 	end
@@ -357,5 +367,7 @@ load_game()
 
 --game loop
 
+player.show_magnifier = false
+player.title = 'Sokoban'
 player:play()
 
