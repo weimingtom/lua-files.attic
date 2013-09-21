@@ -183,7 +183,7 @@ end
 --load/save --------------------------------------------------------------------------------------------------------------
 
 local filename = 'gamefile.lua'
-local gamefile = {level = 1}
+local gamefile = {level = 1, dark = true}
 
 local function load_gamefile()
 	if glue.fileexists(filename) then
@@ -299,8 +299,6 @@ end
 
 function player:on_render(cr)
 
-	--game logic
-
 	if self.ctrl and (self.key == 'left' or self.key == 'right') then
 		load_level(level + (self.key == 'left' and -1 or 1))
 		load_game()
@@ -314,11 +312,6 @@ function player:on_render(cr)
 		redo()
 	end
 
-	--draw game
-
-	self.cr:translate(0, 0.5)
-
-	--GUI
 	local dark = self:togglebutton{id = 'dark', x = 10, y = 10, w = 120, h = 26,
 											text = gamefile.dark and 'lights on' or 'lights off', selected = gamefile.dark}
 	self.theme = self.themes[dark and 'dark' or 'light']
@@ -327,7 +320,6 @@ function player:on_render(cr)
 		changed = true
 	end
 
-	--help & stats
 	local crates_remaining = crates_remaining()
 
 	self:label{x = 10, y = 60, font_face = 'Fixedsys', text =
@@ -335,26 +327,23 @@ function player:on_render(cr)
 		string.format('crates left: %d\n', crates_remaining) ..
 		string.format('moves: %d\n\n', moves) ..
 		'keys: \n' ..
-		'  move: arrow keys\n' ..
-		'  last level: ctrl+left\n' ..
-		'  next level: ctrl+right\n' ..
-		'  undo: ctrl+Z\n' ..
-		'  redo: ctrl+Y\n' ..
-		'  restart level: ctrl+N\n'
+		'  move:           arrow keys\n' ..
+		'  undo:           ctrl+Z\n' ..
+		'  redo:           ctrl+Y\n' ..
+		'  next level:     ctrl+right\n' ..
+		'  last level:     ctrl+left\n' ..
+		'  restart level:  ctrl+N\n'
 	}
 
 	if crates_remaining == 0 then
 		self:label{x = 40, y = 300, font_face = 'Fixedsys', font_size = 32, color = '#ff0000', text = 'COMPLETED'}
 	end
 
-	--tiles
-	self.cr:translate((self.w - sizex * Z) / 2, (self.h - sizey * Z) / 2)
-	--self:rect(0, 0, sizex * Z, sizey * Z, nil, 'faint_bg')
+	self.cr:translate(math.floor((self.w - sizex * Z) / 2), math.floor((self.h - sizey * Z) / 2))
 	for x, y, tile, box in iter_tiles() do
 		self:draw_tile(x, y, tile, box)
 	end
 
-	--save game if changed
 	save()
 
 end
@@ -365,9 +354,11 @@ load_gamefile()
 load_level(gamefile.level)
 load_game()
 
+player.title = 'Sokoban'
+player.show_magnifier = false
+player.continuous_rendering = false
+
 --game loop
 
-player.show_magnifier = false
-player.title = 'Sokoban'
 player:play()
 
